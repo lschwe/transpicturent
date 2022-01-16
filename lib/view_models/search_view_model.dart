@@ -27,12 +27,13 @@ class SearchViewModel extends ChangeNotifier {
   bool get didSearch => _didSearch;
 
   void onQuerySubmitted(String query) {
-    _didSearch = query.isNotEmpty;
+    final _trimmedQuery = query.trim();
+    _didSearch = _trimmedQuery.isNotEmpty;
     _pageNumber = 0;
     _results = [];
     _isLoading = true;
     notifyListeners();
-    SearchService.instance.loadSearchResults(query);
+    SearchService.instance.loadSearchResults(_trimmedQuery);
   }
 
   int _pageNumber = 0;
