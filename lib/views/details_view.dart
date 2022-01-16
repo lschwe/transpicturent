@@ -3,24 +3,21 @@ import 'package:photo_view/photo_view.dart';
 import 'package:transpicturent/constants.dart';
 import 'package:transpicturent/view_models/details_view_model.dart';
 
-class DetailsView extends StatefulWidget {
+class DetailsView extends StatelessWidget {
   const DetailsView(this.viewModel, {Key? key}) : super(key: key);
   final DetailsViewModel viewModel;
 
   @override
-  _DetailsViewState createState() => _DetailsViewState();
-}
-
-class _DetailsViewState extends State<DetailsView> {
-  @override
   Widget build(BuildContext context) {
+    viewModel.context = context;
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
         actions: [
           IconButton(
-            onPressed: () => print('Save tapped'),
+            onPressed: () => viewModel.onSavePressed(),
             icon: Icon(
               Icons.save_alt_rounded,
             ),
@@ -36,7 +33,7 @@ class _DetailsViewState extends State<DetailsView> {
                 child: PhotoView(
                   minScale: PhotoViewComputedScale.contained,
                   maxScale: PhotoViewComputedScale.covered,
-                  imageProvider: NetworkImage(widget.viewModel.imageUrl),
+                  imageProvider: NetworkImage(viewModel.imageUrl),
                   loadingBuilder: (context, event) {
                     if (event == null) return Container();
                     return Center(
@@ -63,14 +60,14 @@ class _DetailsViewState extends State<DetailsView> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            widget.viewModel.title,
+                            viewModel.title,
                             style: TextStyle(
                                 color: AppColors.brand.shade200,
                                 fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            "Source: ${widget.viewModel.source}",
+                            "Source: ${viewModel.source}",
                             style: TextStyle(color: Colors.grey.shade400),
                           ),
                         ],
@@ -79,7 +76,7 @@ class _DetailsViewState extends State<DetailsView> {
                         overlayColor: MaterialStateProperty.all(
                             Colors.white.withOpacity(0.2)),
                       ),
-                      onPressed: () => widget.viewModel.onLinkPressed(),
+                      onPressed: () => viewModel.onLinkPressed(),
                     ),
                   ],
                 ),

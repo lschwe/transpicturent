@@ -48,5 +48,7 @@
       <string>https</string>
       <string>http</string>
     </array>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Allow saving images to your device</string>
 </dict>
 </plist>
