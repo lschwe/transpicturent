@@ -31,6 +31,7 @@ class DetailsView extends StatelessWidget {
             Expanded(
               child: ClipRect(
                 child: PhotoView(
+                  initialScale: PhotoViewComputedScale.contained,
                   minScale: PhotoViewComputedScale.contained,
                   maxScale: PhotoViewComputedScale.covered,
                   imageProvider: NetworkImage(viewModel.imageUrl),

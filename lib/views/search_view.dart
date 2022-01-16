@@ -17,18 +17,23 @@ class _SearchViewState extends State<SearchView> {
       create: (_) => SearchViewModel(context),
       child: Scaffold(
         appBar: AppBar(
-          title: _SearchAppBarTitle(),
+          title: const _SearchAppBarTitle(),
           bottom: _SearchAppBarBottom(),
         ),
         body: Consumer<SearchViewModel>(
           builder: (context, viewModel, child) {
             if (viewModel.isLoading)
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
+
             if (viewModel.showError)
               return Center(child: Text(viewModel.errorMessage!));
+
             if (viewModel.hasResults) return _SearchGrid();
-            if (viewModel.didSearch) return Center(child: Text('No results'));
-            return Center(
+
+            if (viewModel.didSearch)
+              return const Center(child: Text('No results'));
+
+            return const Center(
               child: Text('Pictures at Your Fingertips'),
             );
           },
@@ -47,20 +52,48 @@ class _SearchGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<SearchViewModel>(context, listen: false);
 
-    return CustomScrollView(
-      slivers: [
-        SliverGrid(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              return _SearchItem(index);
-            },
-            childCount: viewModel.resultsCount,
-          ),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            mainAxisSpacing: 1,
-            crossAxisSpacing: 1,
-          ),
+    return Stack(
+      children: [
+        Container(key: viewModel.backgroundKey),
+        CustomScrollView(
+          controller: viewModel.scrollController,
+          slivers: [
+            SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return _SearchItem(index);
+                },
+                childCount: viewModel.resultsCount,
+              ),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 1,
+                crossAxisSpacing: 1,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: viewModel.canLoadMore
+                  ? Padding(
+                      padding: const EdgeInsets.only(
+                        top: Layout.margin,
+                        bottom: Layout.largeMargin,
+                      ),
+                      child: SizedBox(
+                        key: viewModel.infiniteScrollKey,
+                        height: 30,
+                        child: Center(
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: viewModel.isLoadingMore
+                                ? CircularProgressIndicator()
+                                : Container(),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(),
+            )
+          ],
         ),
       ],
     );
@@ -103,7 +136,7 @@ class _SearchItem extends StatelessWidget {
 }
 
 class _SearchAppBarTitle extends StatelessWidget {
-  _SearchAppBarTitle({Key? key}) : super(key: key);
+  const _SearchAppBarTitle({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +159,7 @@ class _SearchAppBarBottom extends StatelessWidget with PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<SearchViewModel>(context, listen: false);
+    final viewModel = Provider.of<SearchViewModel>(context);
 
     return Padding(
       padding: const EdgeInsets.all(Layout.margin).copyWith(
@@ -137,19 +170,12 @@ class _SearchAppBarBottom extends StatelessWidget with PreferredSizeWidget {
             child: Focus(
               onFocusChange: viewModel.onSearchFieldFocusChanged,
               child: TextField(
-                onChanged: (query) => viewModel.onQueryChanged(query),
+                textInputAction: TextInputAction.search,
+                textCapitalization: TextCapitalization.sentences,
+                onSubmitted: (query) => viewModel.onQuerySubmitted(query),
                 decoration: InputDecoration(
                   prefixIconConstraints: const BoxConstraints(),
-                  prefixIcon: const Padding(
-                    padding: EdgeInsets.only(
-                      left: 12,
-                      right: 5,
-                    ),
-                    child: Icon(
-                      Icons.search,
-                      size: 28,
-                    ),
-                  ),
+                  prefixIcon: const _SearchIcon(),
                   hintText: 'Search any image',
                   filled: true,
                   border: _textFieldBorder,
@@ -170,7 +196,10 @@ class _SearchAppBarBottom extends StatelessWidget with PreferredSizeWidget {
                     onPressed: () => viewModel.onCancelButtonPressed(),
                     child: const Text(
                       'Cancel',
-                      style: TextStyle(color: AppColors.secondary),
+                      style: TextStyle(
+                        color: AppColors.secondary,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     style: ButtonStyle(
                       overlayColor: MaterialStateProperty.all(
@@ -204,4 +233,24 @@ class _SearchAppBarBottom extends StatelessWidget with PreferredSizeWidget {
     borderSide:
         BorderSide(color: AppColors.secondary, width: _textFieldBorderWidth),
   );
+}
+
+class _SearchIcon extends StatelessWidget {
+  const _SearchIcon({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.only(
+        left: 12,
+        right: 5,
+      ),
+      child: Icon(
+        Icons.search,
+        size: 28,
+      ),
+    );
+  }
 }

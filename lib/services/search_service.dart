@@ -3,22 +3,23 @@ import 'package:transpicturent/models/image_result.dart';
 
 class SearchService {
   static final SearchService instance = SearchService();
+  static const maxResults = 30;
   final searchResults = PublishSubject<List<ImageResult>>();
 
   String? _lastQuery;
-  Future<void> loadSearchResults(String query) async {
-    // TODO: Wait a 0.2 seconds before loading results
+  int? _lastPage;
 
-    _lastQuery = query;
-    final currentQuery = query;
+  Future<void> loadSearchResults(String? query, {int page = 0}) async {
+    query != null ? _lastQuery = query : query = _lastQuery;
+    _lastPage = page;
 
     // TODO: Use SearchService to get image results
     await Future.delayed(Duration(seconds: 3));
 
-    // TODO: Handle error messaging
-
     // TODO: Check that last search query matches with current search
-    if (_lastQuery != currentQuery) return;
+    if (_lastQuery != query || _lastPage != page) return;
+
+    // TODO: Handle error messaging
 
     // TODO: Update results and notify listeners
     searchResults.add(ImageResult.listFromJson(_dummyResultsJson));
@@ -27,14 +28,17 @@ class SearchService {
 
 const Map<String, dynamic> _dummyResultJson = {
   "position": 1,
-  "thumbnail": "https://m.media-amazon.com/images/I/918YNa3bAaL._SL1500_.jpg",
+  "thumbnail":
+      "https://ggsc.s3.amazonaws.com/images/made/images/uploads/The_Science-Backed_Benefits_of_Being_a_Dog_Owner_600_400_int_c1-2x.jpg",
   "source": "amazon.com",
   "title":
       "Amazon.com: Gala Apples Fresh Produce Fruit, 3 LB Bag : Grocery & Gourmet Food",
   "link":
       "https://www.amazon.com/Gala-Apples-Fresh-Produce-Fruit/dp/B007OC5X40",
-  "original": "https://m.media-amazon.com/images/I/918YNa3bAaL._SL1500_.jpg",
+  "original":
+      "https://ggsc.s3.amazonaws.com/images/made/images/uploads/The_Science-Backed_Benefits_of_Being_a_Dog_Owner_600_400_int_c1-2x.jpg",
   "is_product": true
 };
 
-final List<dynamic> _dummyResultsJson = List.filled(20, _dummyResultJson);
+final List<dynamic> _dummyResultsJson =
+    List.filled(SearchService.maxResults, _dummyResultJson);

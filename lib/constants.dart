@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class Layout {
   static const double margin = 16.0;
+  static const double largeMargin = margin * 2;
 }
 
 class AppColors {
