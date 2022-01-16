@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:transpicturent/constants.dart';
-import 'package:transpicturent/view/root_view.dart';
+import 'package:transpicturent/views/root_view.dart';
 
 void main() {
   runApp(const TranspicturentApp());

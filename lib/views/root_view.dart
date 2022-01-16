@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:transpicturent/view/search_view.dart';
+import 'package:transpicturent/views/search_view.dart';
 
 class RootView extends StatefulWidget {
   const RootView({Key? key}) : super(key: key);

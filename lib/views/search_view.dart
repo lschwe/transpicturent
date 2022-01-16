@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:transpicturent/constants.dart';
-import 'package:transpicturent/view_model/search_view_model.dart';
+import 'package:transpicturent/view_models/search_view_model.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({Key? key}) : super(key: key);
@@ -15,31 +15,56 @@ class _SearchViewState extends State<SearchView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: _SearchAppBarTitle(),
-        bottom: _SearchAppBarBottom(),
-      ),
-      body: ChangeNotifierProvider<SearchViewModel>(
-        create: (_) => viewModel,
-        child: CustomScrollView(
-          slivers: [
-            SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return _SearchItem(index);
-                },
-                childCount: 20,
-              ),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 1,
-                crossAxisSpacing: 1,
-              ),
-            ),
-          ],
+    return ChangeNotifierProvider<SearchViewModel>(
+      create: (_) => viewModel,
+      child: Scaffold(
+        appBar: AppBar(
+          title: _SearchAppBarTitle(),
+          bottom: _SearchAppBarBottom(),
+        ),
+        body: Consumer<SearchViewModel>(
+          builder: (context, viewModel, child) {
+            if (viewModel.isLoading)
+              return Center(child: CircularProgressIndicator());
+            if (viewModel.showError)
+              return Center(child: Text(viewModel.errorMessage!));
+            if (viewModel.hasResults) return _SearchGrid();
+            if (viewModel.didSearch) return Center(child: Text('No results'));
+            return Center(
+              child: Text('Pictures at Your Fingertips'),
+            );
+          },
         ),
       ),
+    );
+  }
+}
+
+class _SearchGrid extends StatelessWidget {
+  const _SearchGrid({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = Provider.of<SearchViewModel>(context, listen: false);
+
+    return CustomScrollView(
+      slivers: [
+        SliverGrid(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return _SearchItem(index);
+            },
+            childCount: viewModel.resultsCount,
+          ),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 1,
+            crossAxisSpacing: 1,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -54,19 +79,24 @@ class _SearchItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<SearchViewModel>(context, listen: false);
+    final thumbnailUrl = viewModel.thumbnailUrlAtIndex(index);
+    if (thumbnailUrl == null) return Container();
+
     return Stack(
       children: [
+        Container(
+          color: Colors.black12,
+        ),
         Positioned.fill(
           child: Image.network(
-            'https://cdn-prod.medicalnewstoday.com/content/images/articles/322/322868/golden-retriever-puppy.jpg',
+            thumbnailUrl,
             fit: BoxFit.cover,
           ),
         ),
         Positioned.fill(
           child: RawMaterialButton(
-            onPressed: () {
-              print('image $index pressed');
-            },
+            onPressed: () => viewModel.onResultPressed(index),
           ),
         ),
       ],
@@ -98,11 +128,14 @@ class _SearchAppBarBottom extends StatelessWidget with PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<SearchViewModel>(context, listen: false);
+
     return Padding(
       padding: const EdgeInsets.all(16).copyWith(top: 0),
       child: TextField(
+        onChanged: (query) => viewModel.onQueryChanged(query),
         decoration: InputDecoration(
-            prefixIconConstraints: BoxConstraints(),
+            prefixIconConstraints: const BoxConstraints(),
             prefixIcon: Padding(
               padding: const EdgeInsets.only(
                 left: 12,
@@ -128,7 +161,7 @@ class _SearchAppBarBottom extends StatelessWidget with PreferredSizeWidget {
   static const double height = 70;
 
   @override
-  Size preferredSize = Size(AppBar().preferredSize.width, height);
+  final Size preferredSize = Size(AppBar().preferredSize.width, height);
 
   static const double _textFieldBorderRadius = 40;
   static const double _textFieldBorderWidth = 3;
