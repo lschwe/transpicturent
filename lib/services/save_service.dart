@@ -7,6 +7,7 @@ class SaveService {
   static saveImage(BuildContext context, String imageUrl) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
         return FutureBuilder<bool?>(
           builder: (context, snapshot) {
@@ -15,6 +16,7 @@ class SaveService {
                 : snapshot.data ?? false
                     ? 'Saved Successfully'
                     : 'Failed to Save');
+            void onOkPressed() => Navigator.pop(context);
 
             if (Platform.isIOS) {
               return CupertinoAlertDialog(
@@ -22,8 +24,8 @@ class SaveService {
                 actions: snapshot.hasData
                     ? [
                         CupertinoDialogAction(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text('OK'),
+                          onPressed: onOkPressed,
+                          child: const Text('OK'),
                         )
                       ]
                     : [],
@@ -35,8 +37,8 @@ class SaveService {
               actions: snapshot.hasData
                   ? [
                       TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text('OK'),
+                        onPressed: onOkPressed,
+                        child: const Text('OK'),
                       )
                     ]
                   : [],

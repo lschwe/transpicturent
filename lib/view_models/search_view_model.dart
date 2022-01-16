@@ -23,10 +23,11 @@ class SearchViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  bool _didSearchOnce = false;
-  bool get didSearch => _didSearchOnce;
+  bool _didSearch = false;
+  bool get didSearch => _didSearch;
 
   void onQuerySubmitted(String query) {
+    _didSearch = query.isNotEmpty;
     _pageNumber = 0;
     _results = [];
     _isLoading = true;
@@ -70,7 +71,6 @@ class SearchViewModel extends ChangeNotifier {
     _didReachEnd = results.length < SearchService.maxResults;
     _isLoading = false;
     _isLoadingMore = false;
-    _didSearchOnce = true;
     notifyListeners();
   }
 
@@ -111,7 +111,7 @@ class SearchViewModel extends ChangeNotifier {
 
   bool _isLoadingMore = false;
   bool get isLoadingMore => _isLoadingMore;
-  bool get canLoadMore => _didSearchOnce && !showError && !_didReachEnd;
+  bool get canLoadMore => _didSearch && !showError && !_didReachEnd;
   final GlobalKey backgroundKey = GlobalKey();
   final GlobalKey infiniteScrollKey = GlobalKey();
   final ScrollController scrollController = ScrollController();

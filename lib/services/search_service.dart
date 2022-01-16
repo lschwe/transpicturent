@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:transpicturent/models/image_result.dart';
 
@@ -14,15 +15,30 @@ class SearchService {
     _lastPage = page;
 
     // TODO: Use SearchService to get image results
-    await Future.delayed(Duration(seconds: 3));
+    if (query?.isEmpty ?? true) return searchResults.add([]);
 
-    // TODO: Check that last search query matches with current search
+    dynamic error;
+    List<ImageResult> results = [];
+
+    try {
+      results = await fetchImages(query!, page);
+    } catch (e) {
+      error = e;
+    }
+
+    // Check that last search query matches with current search
     if (_lastQuery != query || _lastPage != page) return;
 
     // TODO: Handle error messaging
+    if (error != null) return searchResults.addError(error);
 
     // TODO: Update results and notify listeners
-    searchResults.add(ImageResult.listFromJson(_dummyResultsJson));
+    searchResults.add(results);
+  }
+
+  Future<List<ImageResult>> fetchImages(String query, int page) async {
+    await Future.delayed(Duration(seconds: 3));
+    return ImageResult.listFromJson(_dummyResultsJson);
   }
 }
 
