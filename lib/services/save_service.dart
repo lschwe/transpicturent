@@ -6,7 +6,7 @@ import 'package:gallery_saver/gallery_saver.dart';
 class SaveService {
   static saveImage(BuildContext context, String imageUrl) {
     showDialog(
-      context: context!,
+      context: context,
       builder: (context) {
         return FutureBuilder<bool?>(
           builder: (context, snapshot) {

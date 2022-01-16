@@ -68,5 +68,20 @@ class SearchViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _showCancelButton = false;
+  bool get showCancelButton => _showCancelButton;
+
+  void onSearchFieldFocusChanged(bool hasFocus) {
+    print('onSearchFieldFocusChanged $hasFocus');
+    if (hasFocus == _showCancelButton) return;
+    _showCancelButton = hasFocus;
+    notifyListeners();
+  }
+
+  void onCancelButtonPressed() {
+    print('onCancelButtonPressed');
+    FocusScope.of(context).unfocus();
+  }
+
   // TODO: Implement infinite scrolling
 }

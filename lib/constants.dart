@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
+class Layout {
+  static const double margin = 16.0;
+}
+
 class AppColors {
-  static const Color _brandColor = Color(0xFF363286);
-  static const Map<int, Color> _brandShades = {
+  static const Color _primaryColor = Color(0xFF363286);
+  static const Map<int, Color> _primaryShades = {
     50: Color(0xFFb7b5e3),
     100: Color(0xFFa5a2dd),
     200: Color(0xFF938fd6),
@@ -15,9 +19,9 @@ class AppColors {
     900: Color(0xFF363286),
   };
 
-  static MaterialColor get brand =>
-      MaterialColor(_brandColor.hashCode, _brandShades);
-  static const Color secondaryColor = Color(0xFF5CC3A6);
+  static MaterialColor get primary =>
+      MaterialColor(_primaryColor.hashCode, _primaryShades);
+  static const Color secondary = Color(0xFF5CC3A6);
 }
 
 class SecretKeys {

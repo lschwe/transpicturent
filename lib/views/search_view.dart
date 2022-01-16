@@ -113,7 +113,7 @@ class _SearchAppBarTitle extends StatelessWidget {
         Text('Trans'),
         Text(
           'picture',
-          style: TextStyle(color: AppColors.secondaryColor),
+          style: TextStyle(color: AppColors.secondary),
         ),
         Text('nt'),
       ],
@@ -129,29 +129,57 @@ class _SearchAppBarBottom extends StatelessWidget with PreferredSizeWidget {
     final viewModel = Provider.of<SearchViewModel>(context, listen: false);
 
     return Padding(
-      padding: const EdgeInsets.all(16).copyWith(top: 0),
-      child: TextField(
-        onChanged: (query) => viewModel.onQueryChanged(query),
-        decoration: InputDecoration(
-            prefixIconConstraints: const BoxConstraints(),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(
-                left: 12,
-                right: 5,
-              ),
-              child: Icon(
-                Icons.search,
-                size: 28,
+      padding: const EdgeInsets.all(Layout.margin).copyWith(
+          top: 0, right: viewModel.showCancelButton ? 10 : Layout.margin),
+      child: Row(
+        children: [
+          Expanded(
+            child: Focus(
+              onFocusChange: viewModel.onSearchFieldFocusChanged,
+              child: TextField(
+                onChanged: (query) => viewModel.onQueryChanged(query),
+                decoration: InputDecoration(
+                  prefixIconConstraints: const BoxConstraints(),
+                  prefixIcon: const Padding(
+                    padding: EdgeInsets.only(
+                      left: 12,
+                      right: 5,
+                    ),
+                    child: Icon(
+                      Icons.search,
+                      size: 28,
+                    ),
+                  ),
+                  hintText: 'Search any image',
+                  filled: true,
+                  border: _textFieldBorder,
+                  enabledBorder: _textFieldBorder,
+                  focusedBorder: _textFieldFocusedBorder,
+                  fillColor: Colors.white,
+                  isDense: true,
+                  contentPadding: const EdgeInsets.fromLTRB(
+                      Layout.margin, 20, Layout.margin, 12),
+                ),
               ),
             ),
-            hintText: 'Search any image',
-            filled: true,
-            border: _textFieldBorder,
-            enabledBorder: _textFieldBorder,
-            focusedBorder: _textFieldFocusedBorder,
-            fillColor: Colors.white,
-            isDense: true,
-            contentPadding: const EdgeInsets.fromLTRB(16, 20, 16, 12)),
+          ),
+          viewModel.showCancelButton
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: TextButton(
+                    onPressed: () => viewModel.onCancelButtonPressed(),
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(color: AppColors.secondary),
+                    ),
+                    style: ButtonStyle(
+                      overlayColor: MaterialStateProperty.all(
+                          Colors.white.withOpacity(0.2)),
+                    ),
+                  ),
+                )
+              : Container(),
+        ],
       ),
     );
   }
@@ -173,7 +201,7 @@ class _SearchAppBarBottom extends StatelessWidget with PreferredSizeWidget {
     borderRadius: BorderRadius.all(
       Radius.circular(_textFieldBorderRadius),
     ),
-    borderSide: BorderSide(
-        color: AppColors.secondaryColor, width: _textFieldBorderWidth),
+    borderSide:
+        BorderSide(color: AppColors.secondary, width: _textFieldBorderWidth),
   );
 }

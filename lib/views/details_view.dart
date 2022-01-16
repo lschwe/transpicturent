@@ -62,7 +62,7 @@ class DetailsView extends StatelessWidget {
                           Text(
                             viewModel.title,
                             style: TextStyle(
-                                color: AppColors.brand.shade200,
+                                color: AppColors.primary.shade200,
                                 fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 2),

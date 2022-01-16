@@ -14,7 +14,7 @@ class TranspicturentApp extends StatelessWidget {
     return MaterialApp(
       title: 'Transpicturent',
       theme: ThemeData(
-        primarySwatch: AppColors.brand,
+        primarySwatch: AppColors.primary,
       ),
       home: const SearchView(),
       debugShowCheckedModeBanner: false,
