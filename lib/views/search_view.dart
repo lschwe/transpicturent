@@ -11,12 +11,10 @@ class SearchView extends StatefulWidget {
 }
 
 class _SearchViewState extends State<SearchView> {
-  final SearchViewModel viewModel = SearchViewModel();
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SearchViewModel>(
-      create: (_) => viewModel,
+      create: (_) => SearchViewModel(context),
       child: Scaffold(
         appBar: AppBar(
           title: _SearchAppBarTitle(),

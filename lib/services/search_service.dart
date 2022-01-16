@@ -31,8 +31,7 @@ const Map<String, dynamic> _dummyResultJson = {
   "source": "amazon.com",
   "title":
       "Amazon.com: Gala Apples Fresh Produce Fruit, 3 LB Bag : Grocery & Gourmet Food",
-  "link":
-      "https://www.amazon.com/Gala-Apples-Fresh-Produce-Fruit/dp/B007OC5X40",
+  "link": "http://www.amazon.com/Gala-Apples-Fresh-Produce-Fruit/dp/B007OC5X40",
   "original": "https://m.media-amazon.com/images/I/918YNa3bAaL._SL1500_.jpg",
   "is_product": true
 };

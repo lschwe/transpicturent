@@ -1,10 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:transpicturent/models/image_result.dart';
 import 'package:transpicturent/services/search_service.dart';
+import 'package:transpicturent/view_models/details_view_model.dart';
+import 'package:transpicturent/views/details_view.dart';
 
 class SearchViewModel extends ChangeNotifier {
-  SearchViewModel() {
+  final BuildContext context;
+  SearchViewModel(this.context) {
     SearchService.instance.searchResults.listen(
       onLoadResults,
       onError: onLoadError,
@@ -17,14 +19,14 @@ class SearchViewModel extends ChangeNotifier {
   void onQueryChanged(String query) {
     _isLoading = true;
     notifyListeners();
-
-    print('onQueryChanged $query');
     SearchService.instance.loadSearchResults(query);
   }
 
   List<ImageResult> _results = [];
   int get resultsCount => _results.length;
   bool get hasResults => resultsCount > 0;
+  ImageResult? resultAtIndex(int index) =>
+      resultsCount > index ? _results[index] : null;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -33,13 +35,23 @@ class SearchViewModel extends ChangeNotifier {
   bool get didSearch => _didSearch;
 
   String? thumbnailUrlAtIndex(int index) {
-    if (resultsCount > index) return _results[index].thumbnailUrl;
-    return null;
+    return resultAtIndex(index)?.thumbnailUrl;
   }
 
   void onResultPressed(int index) {
     print('onResultPressed $index');
     // TODO: push navigator to detail view controller
+    final imageResult = resultAtIndex(index);
+    if (imageResult == null) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => DetailsView(
+          DetailsViewModel(imageResult),
+        ),
+      ),
+    );
   }
 
   void onLoadResults(List<ImageResult> results) {
@@ -55,4 +67,6 @@ class SearchViewModel extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
+
+  // TODO: Implement infinite scrolling
 }
