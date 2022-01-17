@@ -8,8 +8,8 @@ class SearchViewModel extends ChangeNotifier {
   final BuildContext context;
   SearchViewModel(this.context) {
     SearchService.instance.searchResults.listen(
-      onLoadResults,
-      onError: onLoadError,
+      _onLoadResults,
+      onError: _onLoadError,
     );
     scrollController.addListener(_onDidScroll);
   }
@@ -17,7 +17,7 @@ class SearchViewModel extends ChangeNotifier {
   List<ImageResult> _results = [];
   int get resultsCount => _results.length;
   bool get hasResults => resultsCount > 0;
-  ImageResult? resultAtIndex(int index) =>
+  ImageResult? _resultAtIndex(int index) =>
       resultsCount > index ? _results[index] : null;
 
   bool _isLoading = false;
@@ -37,7 +37,7 @@ class SearchViewModel extends ChangeNotifier {
   }
 
   int _pageNumber = 0;
-  void loadMoreResults() async {
+  void _loadMoreResults() async {
     if (!canLoadMore || isLoadingMore) return;
 
     _isLoadingMore = true;
@@ -48,11 +48,11 @@ class SearchViewModel extends ChangeNotifier {
   }
 
   String? thumbnailUrlAtIndex(int index) {
-    return resultAtIndex(index)?.thumbnailUrl;
+    return _resultAtIndex(index)?.thumbnailUrl;
   }
 
   void onResultPressed(int index) {
-    final imageResult = resultAtIndex(index);
+    final imageResult = _resultAtIndex(index);
     if (imageResult == null) return;
 
     Navigator.push(
@@ -65,7 +65,7 @@ class SearchViewModel extends ChangeNotifier {
     );
   }
 
-  void onLoadResults(List<ImageResult> results) {
+  void _onLoadResults(List<ImageResult> results) {
     hasResults ? _results.addAll(results) : _results = results;
     _didReachEnd = results.length < SearchService.maxResults;
     _isLoading = false;
@@ -76,7 +76,7 @@ class SearchViewModel extends ChangeNotifier {
   String? errorMessage;
   bool get showError => errorMessage != null;
 
-  void onLoadError(dynamic error) {
+  void _onLoadError(dynamic error) {
     final _errorMessage = error.toString();
     hasResults
         ? showLoadMoreError(_errorMessage)
@@ -139,7 +139,7 @@ class SearchViewModel extends ChangeNotifier {
 
     if (backgroundBottomOffset != null &&
         infiniteScrollKeyTopOffset < backgroundBottomOffset!) {
-      loadMoreResults();
+      _loadMoreResults();
     }
   }
 
