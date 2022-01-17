@@ -79,7 +79,6 @@ class SearchViewModel extends ChangeNotifier {
   bool get showError => errorMessage != null;
 
   void onLoadError(dynamic error) {
-    // TODO: Implement error handling
     final _errorMessage = error.toString();
     hasResults
         ? showLoadMoreError(_errorMessage)
@@ -90,7 +89,17 @@ class SearchViewModel extends ChangeNotifier {
   }
 
   void showLoadMoreError(String error) {
-    // TODO: Implement loading more error
+    final ScaffoldMessengerState? _scaffoldState =
+        ScaffoldMessenger.of(context);
+    _scaffoldState?.hideCurrentSnackBar();
+    _scaffoldState?.showSnackBar(SnackBar(
+      content: GestureDetector(
+        child: Text(error),
+        onTap: _scaffoldState.hideCurrentSnackBar,
+      ),
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 5),
+    ));
   }
 
   bool _showCancelButton = false;

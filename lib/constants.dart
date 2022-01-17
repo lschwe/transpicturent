@@ -25,8 +25,11 @@ class AppColors {
   static const Color secondary = Color(0xFF5CC3A6);
 }
 
+// TODO: SecretKeys should be saved in an .env file to avoid exposing keys publicly in a repo, but for ease to run the app, it's been hardcoded.
+
 class SecretKeys {
-  // TODO: SecretKeys should be saved in an .env file to avoid exposing it publicly in the repo, but for ease to run the app, it's been hardcoded into the code
   static const serpApiKey =
       'fa05c38eab7070ea9a180a1147b3e73f1cb9ca67de3f34706558f2fde3bc801e';
+  static const invalidSerpApiKey =
+      'fbd7c4de656fd519286b65b273c80427a6324a55734ffa32cc416764515b2daa'; // for testing errors
 }

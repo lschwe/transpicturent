@@ -1,10 +1,13 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:rxdart/rxdart.dart';
+import 'package:transpicturent/constants.dart';
 import 'package:transpicturent/models/image_result.dart';
 
 class SearchService {
   static final SearchService instance = SearchService();
-  static const maxResults = 30;
+  static const int maxResults = 100;
   final searchResults = PublishSubject<List<ImageResult>>();
 
   String? _lastQuery;
@@ -14,32 +17,58 @@ class SearchService {
     query != null ? _lastQuery = query : query = _lastQuery;
     _lastPage = page;
 
-    // TODO: Use SearchService to get image results
     if (query?.isEmpty ?? true) return searchResults.add([]);
 
     dynamic error;
     List<ImageResult> results = [];
-
     try {
       results = await fetchImages(query!, page);
     } catch (e) {
       error = e;
     }
 
-    // Check that last search query matches with current search
+    // Check this is the last executed search
     if (_lastQuery != query || _lastPage != page) return;
 
-    // TODO: Handle error messaging
-    if (error != null) return searchResults.addError(error);
-
-    // TODO: Update results and notify listeners
-    searchResults.add(results);
+    error == null ? searchResults.add(results) : searchResults.addError(error);
   }
 
   Future<List<ImageResult>> fetchImages(String query, int page) async {
-    await Future.delayed(Duration(seconds: 3));
-    return ImageResult.listFromJson(_dummyResultsJson);
+    final response = await http.get(buildApiUrl(query, page));
+    print('response.statusCode ${response.statusCode}');
+
+    Map<String, dynamic> body;
+    try {
+      body = jsonDecode(response.body) as Map<String, dynamic>;
+      print('body $body');
+    } catch (e) {
+      throw genericError;
+    }
+
+    if (response.statusCode != 200) {
+      throw body.containsKey('error') ? body['error'] : genericError;
+    }
+
+    print(
+        'body[images_results].length ${(body['images_results'] as List).length}');
+    return ImageResult.listFromJson(body['images_results']);
   }
+
+  Uri buildApiUrl(String query, int page) => Uri.https(
+        'serpapi.com',
+        '/search.json',
+        {
+          'q': query,
+          'tbm': 'isch',
+          'ijn': page,
+          'api_key': SecretKeys.serpApiKey,
+        }.map(
+          (key, value) => MapEntry(key, value.toString()),
+        ),
+      );
+
+  static const String genericError =
+      'Failed to fetch images. Please try again.';
 }
 
 const Map<String, dynamic> _dummyResultJson = {

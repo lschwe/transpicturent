@@ -26,17 +26,37 @@ class _SearchViewState extends State<SearchView> {
               return const Center(child: CircularProgressIndicator());
 
             if (viewModel.showError)
-              return Center(child: Text(viewModel.errorMessage!));
+              return _SearchMessage('Error: ${viewModel.errorMessage!}');
 
             if (viewModel.hasResults) return _SearchGrid();
 
-            if (viewModel.didSearch)
-              return const Center(child: Text('No results'));
+            if (viewModel.didSearch) return const _SearchMessage('No results');
 
-            return const Center(
-              child: Text('Pictures at Your Fingertips'),
-            );
+            return _SearchMessage('Pictures at Your Fingertips');
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _SearchMessage extends StatelessWidget {
+  const _SearchMessage(
+    this.message, {
+    Key? key,
+  }) : super(key: key);
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(Layout.margin),
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headline6,
         ),
       ),
     );
