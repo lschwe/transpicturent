@@ -32,7 +32,7 @@ class _SearchViewState extends State<SearchView> {
 
             if (viewModel.didSearch) return const _SearchMessage('No results');
 
-            return _SearchMessage('Pictures at Your Fingertips');
+            return const _SearchMessage('Pictures at Your Fingertips');
           },
         ),
       ),
@@ -105,7 +105,7 @@ class _SearchGrid extends StatelessWidget {
                           child: AspectRatio(
                             aspectRatio: 1,
                             child: viewModel.isLoadingMore
-                                ? CircularProgressIndicator()
+                                ? const CircularProgressIndicator()
                                 : Container(),
                           ),
                         ),
@@ -193,9 +193,9 @@ class _SearchAppBarBottom extends StatelessWidget with PreferredSizeWidget {
                 textInputAction: TextInputAction.search,
                 textCapitalization: TextCapitalization.sentences,
                 onSubmitted: (query) => viewModel.onQuerySubmitted(query),
-                decoration: InputDecoration(
-                  prefixIconConstraints: const BoxConstraints(),
-                  prefixIcon: const _SearchIcon(),
+                decoration: const InputDecoration(
+                  prefixIconConstraints: BoxConstraints(),
+                  prefixIcon: _SearchIcon(),
                   hintText: 'Search any image',
                   filled: true,
                   border: _textFieldBorder,
@@ -203,8 +203,8 @@ class _SearchAppBarBottom extends StatelessWidget with PreferredSizeWidget {
                   focusedBorder: _textFieldFocusedBorder,
                   fillColor: Colors.white,
                   isDense: true,
-                  contentPadding: const EdgeInsets.fromLTRB(
-                      Layout.margin, 20, Layout.margin, 12),
+                  contentPadding:
+                      EdgeInsets.fromLTRB(Layout.margin, 20, Layout.margin, 12),
                 ),
               ),
             ),
@@ -240,13 +240,13 @@ class _SearchAppBarBottom extends StatelessWidget with PreferredSizeWidget {
 
   static const double _textFieldBorderRadius = 40;
   static const double _textFieldBorderWidth = 3;
-  static final _textFieldBorder = OutlineInputBorder(
+  static const _textFieldBorder = OutlineInputBorder(
     borderRadius: BorderRadius.all(
       Radius.circular(_textFieldBorderRadius),
     ),
   );
 
-  static final _textFieldFocusedBorder = OutlineInputBorder(
+  static const _textFieldFocusedBorder = OutlineInputBorder(
     borderRadius: BorderRadius.all(
       Radius.circular(_textFieldBorderRadius),
     ),

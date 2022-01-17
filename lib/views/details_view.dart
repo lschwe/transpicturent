@@ -18,7 +18,7 @@ class DetailsView extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () => viewModel.onSavePressed(),
-            icon: Icon(
+            icon: const Icon(
               Icons.save_alt_rounded,
             ),
           )

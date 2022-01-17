@@ -52,8 +52,6 @@ class SearchViewModel extends ChangeNotifier {
   }
 
   void onResultPressed(int index) {
-    print('onResultPressed $index');
-
     final imageResult = resultAtIndex(index);
     if (imageResult == null) return;
 
@@ -106,14 +104,12 @@ class SearchViewModel extends ChangeNotifier {
   bool get showCancelButton => _showCancelButton;
 
   void onSearchFieldFocusChanged(bool hasFocus) {
-    print('onSearchFieldFocusChanged $hasFocus');
     if (hasFocus == _showCancelButton) return;
     _showCancelButton = hasFocus;
     notifyListeners();
   }
 
   void onCancelButtonPressed() {
-    print('onCancelButtonPressed');
     FocusScope.of(context).unfocus();
   }
 

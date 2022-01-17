@@ -35,22 +35,17 @@ class SearchService {
 
   Future<List<ImageResult>> fetchImages(String query, int page) async {
     final response = await http.get(buildApiUrl(query, page));
-    print('response.statusCode ${response.statusCode}');
 
     Map<String, dynamic> body;
     try {
       body = jsonDecode(response.body) as Map<String, dynamic>;
-      print('body $body');
     } catch (e) {
       throw genericError;
     }
 
-    if (response.statusCode != 200) {
+    if (response.statusCode != 200)
       throw body.containsKey('error') ? body['error'] : genericError;
-    }
 
-    print(
-        'body[images_results].length ${(body['images_results'] as List).length}');
     return ImageResult.listFromJson(body['images_results']);
   }
 
