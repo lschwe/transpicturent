@@ -66,11 +66,16 @@ class DetailsView extends StatelessWidget {
                                 color: AppColors.primary.shade200,
                                 fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(height: 2),
-                          Text(
-                            "Source: ${viewModel.source}",
-                            style: TextStyle(color: Colors.grey.shade400),
-                          ),
+                          ...(viewModel.hasSource
+                              ? [
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    "Source: ${viewModel.source}",
+                                    style:
+                                        TextStyle(color: Colors.grey.shade400),
+                                  ),
+                                ]
+                              : []),
                         ],
                       ),
                       style: ButtonStyle(

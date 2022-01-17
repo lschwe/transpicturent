@@ -1,5 +1,5 @@
 class ImageResult {
-  final String source;
+  final String? source;
   final String title;
   final String linkUrl;
   final String thumbnailUrl;

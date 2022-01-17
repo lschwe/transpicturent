@@ -11,7 +11,8 @@ class DetailsViewModel {
 
   String get imageUrl => imageResult.originalUrl;
   String get title => imageResult.title;
-  String get source => imageResult.source;
+  String? get source => imageResult.source;
+  bool get hasSource => source != null;
   String get linkUrl => imageResult.linkUrl;
 
   void onLinkPressed() async {
